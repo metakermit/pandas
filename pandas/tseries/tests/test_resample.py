@@ -39,6 +39,24 @@ class TestResample(unittest.TestCase):
 
         self.series = Series(np.random.rand(len(dti)), dti)
 
+    def test_resample_both(self):
+        l = 12
+        rng = pd.date_range(start=datetime(2013, 03, 14), periods=l,
+            freq='1s')
+        data = np.array([1] * l)
+        s = Series(data, index=rng)
+
+        # resample taking both edges
+        s = s.resample('3s', how='sum', closed='both')
+
+        # construct expected resampled series
+        rng2 = pd.date_range(start=datetime(2013, 03, 14), periods=l/3,
+            freq='3s')
+        data2 = np.array([4]*len(rng2))
+        expected = Series(data2, rng2)
+
+        assert_series_equal(s, expected.astype(float))
+
     def test_custom_grouper(self):
 
         dti = DatetimeIndex(freq='Min', start=datetime(2005, 1, 1),
