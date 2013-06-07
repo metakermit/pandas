@@ -40,6 +40,7 @@ class TestResample(unittest.TestCase):
         self.series = Series(np.random.rand(len(dti)), dti)
 
     def test_resample_both(self):
+        # s = pd.Series(range(12), pd.date_range('2012-01-01', periods=12, freq='s'))
         l = 12
         rng = pd.date_range(start=datetime(2013, 03, 14), periods=l,
             freq='1s')

@@ -24,7 +24,7 @@ class TimeGrouper(CustomGrouper):
     Parameters
     ----------
     freq : pandas date offset or offset alias for identifying bin edges
-    closed : closed end of interval; left (default) or right
+    closed : closed end of interval; left (default), right or both
     label : interval boundary to use for labeling; left (default) or right
     nperiods : optional, integer
     convention : {'start', 'end', 'e', 's'}
@@ -133,9 +133,10 @@ class TimeGrouper(CustomGrouper):
                                         end=last.replace(tzinfo=None), tz=tz)
 
         # a little hack
+        # - not sure if 'both' should go here
         trimmed = False
         if (len(binner) > 2 and binner[-2] == axis[-1] and
-                self.closed == 'right'):
+                (self.closed == 'right' or self.closed == 'both')):
 
             binner = binner[:-1]
             trimmed = True
@@ -304,7 +305,7 @@ def _get_range_edges(axis, offset, closed='left', base=0):
         first = tools.normalize_date(first)
         last = tools.normalize_date(last)
 
-    if closed == 'left':
+    if closed == 'left' or 'both':
         first = Timestamp(offset.rollback(first))
     else:
         first = Timestamp(first - offset)
@@ -327,7 +328,7 @@ def _adjust_dates_anchored(first, last, offset, closed='right', base=0):
     foffset = (first.value - start_day_nanos) % offset.nanos
     loffset = (last.value - last_day_nanos) % offset.nanos
 
-    if closed == 'right':
+    if closed == 'right' or closed == 'both':
         if foffset > 0:
             # roll back
             fresult = first.value - foffset
