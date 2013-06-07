@@ -2,6 +2,8 @@
 *.pyo
 *.swp
 .ropeproject
+.project
+.pydevproject
 build
 dist
 MANIFEST
